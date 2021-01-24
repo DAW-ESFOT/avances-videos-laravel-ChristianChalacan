@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    private static $rules = [
+        'title' => 'required|string|unique:articles|max:255',
+        'body' => 'required',
+        'category_id' => 'required|exists:categories,id'
+    ];
     public function index()
     {
         return new ArticleCollection(Article::paginate(10)) ;
@@ -22,16 +27,22 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'title' => 'required|string|unique:articles|max:255',
             'body' => 'required',
-            ]);
-        $article =  Article::create($validatedData);
+            'category_id' => 'required|exists:categories,id'
+        ]);
+        $article =  Article::create($request->all());
         return response()->json(new ArticleResource($article),201);
     }
 
     public function update(Request $request, Article $article)
     {
+        $request->validate([
+            'title' => 'required|string|unique:articles,title,'.$article->id.'|max:255',
+            'body' => 'required',
+            'category_id' => 'required|exists:categories,id'
+        ]);
         $article->update($request->all());
         return response()->json($article,200);
     }
