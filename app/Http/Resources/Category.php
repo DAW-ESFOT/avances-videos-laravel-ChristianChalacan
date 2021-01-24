@@ -17,7 +17,7 @@ class Category extends JsonResource
         return[
             'id' => $this -> id,
             'name' => $this -> name,
-            'article'=>'/api/category/'.$this->id.'articles',
+            'article'=>'/api/category/'.$this->id.'/articles',
 
         ];
     }

@@ -22,8 +22,12 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-        $article =  Article::create($request->all());
-        return response()->json($article,201);
+        $validatedData = $request->validate([
+            'title' => 'required|string|unique:articles|max:255',
+            'body' => 'required',
+            ]);
+        $article =  Article::create($validatedData);
+        return response()->json(new ArticleResource($article),201);
     }
 
     public function update(Request $request, Article $article)
