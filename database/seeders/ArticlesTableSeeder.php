@@ -38,6 +38,7 @@ class ArticlesTableSeeder extends Seeder
                     'title' => $faker->sentence,
                     'body' => $faker->paragraph,
                     'category_id' => $faker->numberBetween(1, 3),
+                    'image' => $faker->imageUrl(400,300, null, false)
                     ]);
             }
         }
