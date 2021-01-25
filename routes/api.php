@@ -26,6 +26,7 @@ Route::get('articles', 'App\Http\Controllers\ArticleController@index');
 
 Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('user', 'App\Http\Controllers\UserController@getAuthenticatedUser');
+    Route::get('articles/{article}/image', 'ArticleController@image');
 
     //Article
     Route::get('articles/{article}', 'App\Http\Controllers\ArticleController@show');

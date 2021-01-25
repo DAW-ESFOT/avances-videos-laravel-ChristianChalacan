@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Http\Resources\Article as ArticleResource;
 use App\Http\Resources\ArticleCollection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 
 class ArticleController extends Controller
@@ -17,12 +18,17 @@ class ArticleController extends Controller
     ];
     public function index()
     {
+        //$this->authorize('viewAny', Article::class);
         return new ArticleCollection(Article::paginate(10)) ;
     }
 
     public function show(Article $article)
     {
+        $this->authorize('view', $article);
         return response()->json(new ArticleResource($article),200) ;
+    }
+    public function image(Article $article){
+        return response()->dowload(public_path(Storage::url($article->image)), $article->title);
     }
 
     public function store(Request $request)
@@ -42,6 +48,7 @@ class ArticleController extends Controller
 
     public function update(Request $request, Article $article)
     {
+        $this->authorize('update',$article);
         $request->validate([
             'title' => 'required|string|unique:articles,title,'.$article->id.'|max:255',
             'body' => 'required',
@@ -53,6 +60,7 @@ class ArticleController extends Controller
 
     public function delete(Request $request, Article $article)
     {
+        $this->authorize('delete',$article);
         try {
             $article->delete();
         } catch (\Exception $e) {
